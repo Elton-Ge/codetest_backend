@@ -4,12 +4,14 @@ const { MongoClient } = require("mongodb");
 const uri =
   "mongodb+srv://envision-user:utDqZf9yWIFW87Ej@envision-cluster.pgpms.mongodb.net/envision-db?retryWrites=true&w=majority";
 // Create a new MongoClient
-const client = new MongoClient(uri, { useUnifiedTopology: true });
+const client = new MongoClient(uri, {
+  useUnifiedTopology: true,
+  poolSize: 2,
+  promiseLibrary: global.Promise,
+});
 
 async function getDataByDirectAndTime(direction, timestamp) {
-  let weekdaysArray = 0;
-  let weekendArray = 0;
-  let result = {};
+  let count = 0;
   try {
     // Connect the client to the server
     await client.connect();
@@ -17,24 +19,27 @@ async function getDataByDirectAndTime(direction, timestamp) {
     const database = client.db("envision-db");
     const collection = database.collection("sample-data");
     // query data
-    const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    const weekDaysArr = [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+    ];
+    const weekendArr = ["Saturday", "Sunday"];
     await collection.find({ direction: direction }).forEach((data) => {
-      const date = new Date(data.timestamp);
-      const dayName = weekDays[date.getDay()];
-      if (timestamp === "weekdays" && dayName !== null) {
-        weekdaysArray++;
-      } else if (timestamp === "weekend" && dayName === null) {
-        weekendArray++;
+      const day = new Date(data.timestamp).getDay();
+      if (timestamp === "weekdays") {
+        if (weekDaysArr[day]) {
+          count++;
+        }
+      } else if (timestamp === "weekend") {
+        if (weekendArr[day]) {
+          count++;
+        }
       }
     });
-    // save result
-    result = {
-      weekdays: weekdaysArray,
-      weekend: weekendArray,
-      direction: direction,
-      timestamp: timestamp,
-    };
-    return result;
+    return count;
   } catch (err) {
     console.error(err);
   }
