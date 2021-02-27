@@ -6,7 +6,7 @@ const uri =
 // Create a new MongoClient
 const client = new MongoClient(uri, { useUnifiedTopology: true });
 
-async function count(direction, timestamp) {
+async function getDataByDirectAndTime(direction, timestamp) {
   let weekdaysArray = 0;
   let weekendArray = 0;
   let result = {};
@@ -38,11 +38,9 @@ async function count(direction, timestamp) {
   } catch (err) {
     console.error(err);
   }
-};
+}
 
-
-async function getAll() {
-  
+async function getAllData() {
   let allResult = [];
   try {
     // Connect the client to the server
@@ -60,9 +58,9 @@ async function getAll() {
   } catch (err) {
     console.error(err);
   }
-};
+}
 
 module.exports = {
-  count,
-  getAll
-}
+  getDataByDirectAndTime,
+  getAllData,
+};
