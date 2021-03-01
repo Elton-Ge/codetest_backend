@@ -8,6 +8,7 @@ app.get("/getLocation", getLocation);
 
 app.get("/getAll", getAll);
 
+
 app.listen(5000, () => {
   console.log("server is run on port 5000");
 });
