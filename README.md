@@ -13,7 +13,8 @@
 * Get queryed results given by direction and timestamp 
 
 ## How to run this application
-* node index.js or nodemon index.js for development
+*  $ npm install
+* then $ node index.js or nodemon index.js for development
 
 ## Server port 
 default port : 5000
